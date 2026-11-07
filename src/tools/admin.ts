@@ -1,5 +1,5 @@
 /**
- * PLATFORM ADMIN tools — Peral operators (CRETIP_ADMIN_EMAILS / is_admin).
+ * PLATFORM ADMIN tools — Peral operators (ADMIN_EMAILS / is_admin).
  * A platform admin works in every shop; every od_* tool also accepts any store_id for them.
  */
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -13,7 +13,7 @@ const ROLE = z.enum(["owner", "admin", "designer", "ops", "support", "accountant
 export function registerAdminTools(server: McpServer, api: WebtoolsClient): void {
   server.tool(
     "od_admin_overview",
-    "ADMIN: platform overview — users, shops, artworks/campaigns/orders totals, trial limits, CRETIP_ADMIN_EMAILS.",
+    "ADMIN: platform overview — users, shops, artworks/campaigns/orders totals, trial limits, ADMIN_EMAILS.",
     {},
     async () => jsonText(await api.get("/admin/overview")),
   );
@@ -27,7 +27,7 @@ export function registerAdminTools(server: McpServer, api: WebtoolsClient): void
 
   server.tool(
     "od_admin_set_user_admin",
-    "ADMIN: grant / remove platform admin (is_admin: access to every shop, no trial limits). Cannot demote yourself or an email in CRETIP_ADMIN_EMAILS.",
+    "ADMIN: grant / remove platform admin (is_admin: access to every shop, no trial limits). Cannot demote yourself or an email in ADMIN_EMAILS.",
     { user_id: z.number().int(), is_admin: z.boolean() },
     async ({ user_id, is_admin }) => jsonText(await api.patch(`/admin/users/${user_id}`, { isAdmin: is_admin })),
   );

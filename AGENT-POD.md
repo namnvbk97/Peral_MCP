@@ -16,14 +16,14 @@ webtools/backend/.venv/Scripts/python webtools/tools/peral_check.py campaign <ca
 
 ## Platform Admin
 
-Tài khoản vận hành Peral (`CRETIP_ADMIN_EMAILS` / `is_admin`) — mặc định `nam.nv.bk97@gmail.com`:
+Tài khoản vận hành Peral (`ADMIN_EMAILS` / `is_admin`) — mặc định `nam.nv.bk97@gmail.com`:
 
 - Vào được **mọi shop** (menu chọn shop liệt kê hết; mọi `od_*` nhận bất kỳ `store_id`), quyền như Quản lý + chuyển owner
 - Web: `/app/admin` (chỉ hiện khi `platform_admin`) — shop (đổi tên, bật/tắt, thành viên, MCP token, xoá), tài khoản (cấp/gỡ admin, reset quota), giới hạn dùng thử
 - Tool `od_admin_*` **không** nằm trong MCP này — dùng MCP riêng `peral-admin` (`src/admin-server.ts`, remote `/mcp-admin`, token `adm_…` lấy ở `/app/admin` → Admin MCP). Xem `AGENT-ADMIN.md`.
 - Token MCP của shop gọi API admin sẽ bị 403.
 
-Đổi platform admin: sửa `CRETIP_ADMIN_EMAILS` + `MCP_ACT_AS_EMAIL` trong `webtools/backend/.env` → restart API → Gmail mới đăng nhập một lần; gỡ `is_admin` của người cũ trên `/app/admin` nếu cần.
+Đổi platform admin: sửa `ADMIN_EMAILS` + `MCP_ACT_AS_EMAIL` trong `webtools/backend/.env` → restart API → Gmail mới đăng nhập một lần; gỡ `is_admin` của người cũ trên `/app/admin` nếu cần.
 
 ## MCP token theo shop
 

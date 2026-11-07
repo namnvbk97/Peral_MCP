@@ -3,7 +3,7 @@
 MCP riêng cho **platform admin** (tách khỏi `open-designer` là MCP làm việc trong shop).
 
 - Token: `adm_…` — mỗi admin 1 token, lấy ở `/app/admin` → **Admin MCP** (copy lại được, Gen lại thì token cũ chết).
-- Token chỉ chạy khi tài khoản còn là platform admin (`is_admin` hoặc nằm trong `CRETIP_ADMIN_EMAILS`).
+- Token chỉ chạy khi tài khoản còn là platform admin (`is_admin` hoặc nằm trong `ADMIN_EMAILS`).
 - Token MCP của shop **không** gọi được API admin (403).
 
 ## Tool
