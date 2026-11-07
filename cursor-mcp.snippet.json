@@ -1,0 +1,11 @@
+{
+  "open-designer": {
+    "command": "npx",
+    "args": ["tsx", "src/server.ts"],
+    "cwd": "C:/NAM/OpenDesigner/webtools/mcp",
+    "env": {
+      "WEBTOOLS_API_URL": "http://127.0.0.1:8010",
+      "MCP_API_KEY": "(Generate at /app/mcp — or webtools/backend/.env MCP_API_KEY)"
+    }
+  }
+}
