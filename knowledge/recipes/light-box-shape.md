@@ -18,3 +18,9 @@ example: SXMT25052603 — artwork 80d60825-dad6-4cb5-b268-1a2d128f3aa4, campaign
 
 ## Campaign
 4 size 1 mặt bật, giá 15.99 / 22.99 như các SXMT khác. Mockup: `lightbox_mockup.py --print <file 1 mặt>` (bật đèn nền tối + tắt đèn nền trắng).
+
+## Preview khi khách điền form (bắt buộc — mặc định hiện nguyên tấm file in: khuôn đen + thiết kế + bản 2 mặt)
+1. `lightbox_mockup.py --print <file in 1 mặt> --out lb.jpg --preview` → `lb-preview-scene.jpg` (light box bật đèn), `lb-preview-mask.png` (dáng khuôn cắt), `lb-preview.json` (quad + frame).
+2. `od_campaign_upload_preview_asset` scene + mask → `od_campaign_update_product.preview`: `mode: "scene"`, `sceneUrl`, `maskUrl`, `quad` (SXMT25052603: (152,145)-(1456,145)-(1456,1449)-(152,1449) trên ảnh 1600), `frame.crop {x:0, y:0.5, w:1, h:0.5}` (ô front của file 1 mặt), `shadingStrength: 0`.
+3. Kiểm `od_campaign_live_preview` với 2 tên (ngắn / dài): tên mới nằm trên biển, phần ngoài dáng là ảnh nền.
+Khuôn cắt cố định theo thiết kế nên mask dùng chung cho mọi đơn.
