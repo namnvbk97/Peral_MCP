@@ -64,6 +64,10 @@ const fieldsSchema = {
   fulfillment: z.record(z.unknown()).optional().describe("e.g. {productionDays, shippingUs, packaging}"),
   made_in: z.string().optional(),
   care: z.array(z.string()).optional(),
+  agent_doc: z
+    .string()
+    .optional()
+    .describe("Markdown the agent reads before designing: how the print file is made, photo box, font, thread color. Saved as agentDoc and AGENT.md."),
 };
 
 type Fields = { [K in keyof typeof fieldsSchema]?: unknown };
@@ -92,6 +96,7 @@ function toBody(a: Fields) {
     fulfillment: a.fulfillment,
     madeIn: a.made_in,
     care: a.care,
+    agentDoc: a.agent_doc,
   });
 }
 
@@ -110,6 +115,54 @@ export function registerProductBaseTools(server: McpServer, api: WebtoolsClient)
     "PRODUCT BASE: edit fields (replaces each given top-level field; others in product.json are kept).",
     { slug: z.string(), ...fieldsSchema },
     async ({ slug, ...rest }) => jsonText(await api.patch(`/studio/product-bases/${slug}`, toBody(rest as Fields))),
+  );
+
+  server.tool(
+    "od_get_product_base_guide",
+    "PRODUCT BASE: read this before creating or editing an artwork. Returns the guide for this phôi (how the print file is made, photo position, font, color) plus options and print layouts. " +
+      "Does not dump the variant price list. Empty guide means the base has no agent notes yet.",
+    { slug: z.string() },
+    async ({ slug }) => {
+      const base = (await api.get(`/studio/product-bases/${encodeURIComponent(slug)}`)) as {
+        slug?: string;
+        name?: string;
+        productCode?: string;
+        supplier?: string;
+        catalogSku?: string;
+        sourceUrl?: string | null;
+        product?: Record<string, unknown>;
+      };
+      const product = base.product || {};
+      const layouts = Array.isArray(product.printLayouts) ? product.printLayouts : [];
+      return jsonText({
+        slug: base.slug,
+        name: base.name,
+        productCode: base.productCode || product.productCode,
+        supplier: base.supplier || product.supplier,
+        catalogSku: base.catalogSku || product.catalogSku,
+        sourceUrl: base.sourceUrl || product.sourceUrl,
+        guide: typeof product.agentDoc === "string" ? product.agentDoc : "",
+        options: product.options || [],
+        printLayouts: layouts.map((layout) => {
+          const row = layout as Record<string, unknown>;
+          return {
+            key: row.key,
+            name: row.name,
+            width: row.width,
+            height: row.height,
+            dpi: row.dpi,
+            format: row.format,
+            colorMode: row.colorMode,
+            transparent: row.transparent,
+            templateMode: row.templateMode,
+            template: row.template,
+            side: row.side,
+          };
+        }),
+        printFile:
+          "Một đơn in ra một file cho mỗi printLayout, artwork vẽ đúng khổ đó, tỷ lệ 1:1. templateMode guide: file template chỉ để canh, không dán vào file xuất. Ảnh và chữ khách điền là layer trên artwork.",
+      });
+    },
   );
 
   server.tool(

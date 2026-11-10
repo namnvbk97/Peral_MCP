@@ -4,6 +4,11 @@
 
 Khách không vẽ file in. Khách chỉ tải ảnh, gõ tên, đôi khi chọn nền. File in của từng đơn mới là thứ gửi xưởng. Mỗi món có phôi riêng, artwork riêng, campaign riêng. Không lấy khổ in, bleed, shape, hay giá của món này gán sang món khác. Không bịa các số đó. Đọc product base.
 
+## Luật bắt buộc
+
+1. **Chỉ làm dữ liệu qua MCP `od_*`.** Liệt kê / tạo / sửa phôi, artwork, campaign, mockup bằng tool MCP (chưa nối MCP → `cd webtools/mcp && npx tsx scripts/call.ts open-designer <tool> '<json>'`). Không ghi file dữ liệu, không gọi API thẳng, hạn chế sửa code; thiếu tính năng thì làm bằng layer / điều kiện / clone / preview có sẵn và hỏi user trước khi sửa code.
+2. **Preview campaign giống sản phẩm thật nhất.** Mockup chính = ảnh chụp thật của phôi (trang xưởng) ghép file in thật — cốc quấn hình trụ, mica có viền + lỗ treo, light box như ảnh xưởng. Không dùng mockup "Studio" phẳng, hình vẽ code hay ảnh AI làm ảnh chính. Preview form (`preview` mode scene) dùng ảnh phôi trơn + mask + quad, kiểm bằng `od_campaign_live_preview`. Tool: `webtools/tools/tumbler_scene_mockup.py`, `lightbox_mockup.py`, `charm_mockup.py`.
+
 Skill từng bước (Claude Code `.claude/skills`, Cursor `.cursor/skills`): `peral-add-product-base`, `peral-create-artwork`, `peral-create-campaign`, `peral-product-structure`.
 
 **Kiểm tra sau mỗi bước** (0 FAIL mới báo xong):
@@ -34,7 +39,7 @@ Tài khoản vận hành Peral (`ADMIN_EMAILS` / `is_admin`) — mặc định `
 ## Thứ tự
 
 1. `od_list_stores` rồi làm trên đúng shop.
-2. `od_list_product_bases` / `od_get_product_base`. Chưa có file in thì khóa file in ở Product Base trước.
+2. `od_list_product_bases`, rồi `od_get_product_base_guide` cho đúng slug. Guide là cách file in của phôi đó được tạo (vị trí ảnh, font, màu chữ, ô in). Đọc xong mới `od_get_product_base`. Chưa có file in thì khóa file in ở Product Base trước.
 3. `od_create_artwork` trên đúng slug và size.
 4. Thêm layer khách điền: ảnh, chữ, nền.
 5. `od_create_campaign` gắn artwork đó, bật size bán.
@@ -100,11 +105,13 @@ Phôi có ô `cut` thì artwork thêm một layer `static-photo` full canvas v�
 
 ## Mặt sau
 
-Artwork có một trang cho mỗi file in của Product Base (`imageDoc.pages`), cùng kích thước file in. Mặt sau là layer đặt ở chỗ mặt sau trên trang (cùng file in) hoặc trên trang của file mặt sau (`props.side` = key trang). Không có chế độ lật tự động: lật gương bật `props.flipH` trên từng layer.
+Artwork có một trang cho mỗi file in của Product Base (`imageDoc.pages`), cùng kích thước file in. Mặt sau là layer đặt ở chỗ mặt sau trên trang (cùng file in) hoặc trên trang của file mặt sau (`props.side` = key trang). Không có chế độ lật tự động: lật từng layer bằng `props.flipH` (ngang) và / hoặc `props.flipV` (dọc); bật cả hai = xoay 180°. Bỏ cả hai trên layer clone = giống nguồn.
 
 Layer chỉ in khi khách mua TWO SIDES: điều kiện `{"element": "__sides", "value": ["2"]}` (ô "Ẩn khi ONE SIDE" trong editor).
 
 Muốn ảnh lật còn chữ không lật: layer ảnh và chữ gốc ở mặt trước. Tạo layer mới (`static-photo` hoặc `text`) ở vùng mặt sau, `props.cloneOf` = id layer gốc, `props.flipH` bật hoặc tắt riêng layer đó, `props.customizationType` = `no_customization` để khách không thấy ô thứ hai. Clone from nằm trên layer tạo sau.
+
+Khuôn cắt mica theo ảnh khách (sau rembg): layer type `cut-silhouette` đặt ở vùng khuôn cắt trên trang, `props.cloneOf` = id layer ảnh (`photo-upload` / `static-photo`), cùng width / height / fit với layer đó (x / y là chỗ khuôn cắt), `props.cutPaddingPx` = số px phình (mặc định 24 ≈ 2mm khi canvas ≈ file in 300 DPI). Layer lấy `src` từ nguồn; lúc render tô đen theo alpha và phình padding.
 
 Clipart có ảnh back riêng từng lựa chọn thì không đồng thời `cloneOf` trên cùng layer đích. Một trong hai cách.
 

@@ -476,7 +476,7 @@ export function registerCampaignTools(server: McpServer, api: WebtoolsClient): v
 
   server.tool(
     "od_publish_campaign",
-    "CAMPAIGN: publish to channel. Shopify + connected shop → real product (variants, prices, mockups, listing); other channels → recorded launch only. Publishes linked artworks too.",
+    "CAMPAIGN: push to Shopify only. Not published → first publish (becomes Live). Needs update → update the same Shopify product (back to Live). Live in sync and Archive are refused. No Shopify connection → stays Not published. Publishes linked artworks too.",
     {
       campaign_id: z.string(),
       channel: z.enum(CHANNELS).optional(),
@@ -503,7 +503,7 @@ export function registerCampaignTools(server: McpServer, api: WebtoolsClient): v
 
   server.tool(
     "od_unpublish_campaign",
-    "CAMPAIGN: unpublish (back to draft/ready).",
+    "CAMPAIGN: unlink from Shopify (product set to draft). Campaign returns to Not published. Archive only after this.",
     { campaign_id: z.string() },
     async ({ campaign_id }) => {
       const c = await api.post<Dict>(`/studio/campaigns/${campaign_id}/unpublish`);

@@ -69,7 +69,7 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
 
   server.tool(
     "od_agent_guide",
-    "Read this before creating a Product Base, artwork, or campaign. Print layout, customer photo, name text, background, and back side.",
+    "Read this before creating a Product Base, artwork, or campaign. Then od_get_product_base_guide for the phôi you are designing: that is how its print file is made.",
     {},
     async () => ({
       content: [{ type: "text" as const, text: readFileSync(resolve(__dirname, "../AGENT-POD.md"), "utf8") }],

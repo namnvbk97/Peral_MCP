@@ -80,7 +80,7 @@ export function registerArtworkTools(server: McpServer, api: WebtoolsClient): vo
 
   server.tool(
     "od_get_product_base",
-    "ARTWORK: full Product Base detail — per-size print px/DPI, phôi preview URL, print file + PSD download links, costs, features.",
+    "ARTWORK: full Product Base detail — per-size print px/DPI, phôi preview URL, print file + PSD download links, costs, features. Call od_get_product_base_guide first to read how this phôi's print file is made.",
     { slug: z.string() },
     async ({ slug }) => jsonText(await api.get(`/studio/product-bases/${encodeURIComponent(slug)}`)),
   );
