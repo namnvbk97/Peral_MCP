@@ -24,6 +24,7 @@ import { registerTeamTools } from "./tools/team.js";
 import { registerResearchTools } from "./tools/research.js";
 import { registerShopSettingsTools } from "./tools/shopSettings.js";
 import { registerPrintScriptTools } from "./tools/printScript.js";
+import { registerFormLayoutTools } from "./tools/formLayout.js";
 import { jsonText } from "./tools/common.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -718,6 +719,7 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
   registerResearchTools(server, api);
   registerShopSettingsTools(server, api);
   registerPrintScriptTools(server, api);
+  registerFormLayoutTools(server, api);
   return server;
 }
 
