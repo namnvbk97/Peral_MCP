@@ -59,9 +59,13 @@ Làm bằng tool: **`od_artwork_form_grid`** (thay cho `od_artwork_auto_form_lay
 - Khách chọn (Trắng / Đen …): layer `color` "Text color", `bindTargetLayerId` = ô tên, `bindMode: "fill"`, mặc định = màu trong brief.
 - **Binding chỉ đổi 1 layer.** Bản sao tên ở mặt kia (`cloneOf`) không ăn màu → mỗi màu một bản sao, `condition` theo layer màu chữ:
   `{"action":"show","match_type":"all","dependencies":[{"element":"layer-textcolor","value":["black"]}]}`.
-- Màu chữ tự đổi theo nền (không hỏi khách): option nền có `textColor` + layer nền có `textLayerIds`.
-- **Màu chữ chỉ đặt ở artwork** (từ 10/11/2026): màu hiệu lực = `textColor` của nền đang chọn (nếu nền đó điều khiển layer chữ), không có thì `fill` của layer chữ. Trình sửa: Fill của layer chữ ghi vào nền đang chọn ("Màu chữ · nền X"), danh sách nền có ô màu chữ từng nền. Ảnh chính campaign (scene, layer chữ `cloneFieldId`) **tự theo màu artwork**; chỉ khi bật "Màu riêng" (`fillMode: "custom"`) mới dùng `fill` riêng. Không sửa màu trong scene campaign nữa.
-  Kiểm bằng cả `od_campaign_print_file` **và** `od_campaign_live_preview`. **Không dùng cùng lúc** với ô màu chữ (cái nào chạy sau sẽ ghi đè) — khi thêm ô màu chữ thì xoá `textColor` / `textLayerIds`.
+- **Màu chữ tự đổi theo nền (không hỏi khách) → dùng `condition`**, không thêm thuộc tính riêng cho mã (mẫu: MCSMT17102603):
+  1. Ô tên gốc `text` đặt `formOnly: true` ("Ẩn trên canvas": vẫn là ô nhập, không in).
+  2. Mỗi option nền × mỗi mặt một `text` `cloneOf` ô gốc, `fill` = màu chữ của nền đó, `customizationType: "no_customization"`, `condition` `{"action":"show","match_type":"all","dependencies":[{"element":"layer-bg","value":["<id nền>"]}]}`.
+  3. Bảng Layers tự chia **tab theo option** (Tất cả / từng nền, kiểu Teeinblue): bấm tab nền nào thì thấy layer chữ của nền đó và canvas đổi theo — merchant sửa màu ngay trên layer đó.
+  4. Xoá `textColor` ở option và `textLayerId(s)` ở layer nền (cách cũ) để không ghi đè.
+  5. Ảnh chính campaign: layer chữ của scene đặt `fillMode: "custom"` + `fill` theo từng nền.
+  Kiểm bằng `od_artwork_print_file` (từng nền, cả 2 mặt) **và** `od_campaign_live_preview`.
 
 ## 4. Chọn font
 

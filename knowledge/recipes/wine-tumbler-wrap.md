@@ -21,7 +21,7 @@ example: WSTLG22082601 — artwork 5852fa6b-c105-4335-8cc7-765b8ea4ad12, campaig
 | layer-name-{l,r}-{classic,minimal,script} | text | cloneOf layer-name, box 1150×190 tại y 140, condition theo layer-font |
 | layer-font | additional-option | 3 ảnh mẫu: Questrial 96 (in hoa) · Julius Sans One 92 (in hoa) · Amilly Signature 150 |
 
-Màu chữ tự theo nền: option `textColor` + `textLayerIds` (6 bản sao).
+Màu chữ tự theo nền: mỗi nền × mặt một bản sao chữ có `condition` theo nền (skill customer-options §3; mã cũ còn dùng `textColor` + `textLayerIds`).
 
 ## Form
 Background color (lưới ảnh 8) → Pet photo → Pet name → Font style.
