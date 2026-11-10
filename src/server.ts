@@ -23,6 +23,7 @@ import { registerProductBaseTools } from "./tools/productBase.js";
 import { registerTeamTools } from "./tools/team.js";
 import { registerResearchTools } from "./tools/research.js";
 import { registerShopSettingsTools } from "./tools/shopSettings.js";
+import { registerPrintScriptTools } from "./tools/printScript.js";
 import { jsonText } from "./tools/common.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -716,6 +717,7 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
   registerTeamTools(server, api);
   registerResearchTools(server, api);
   registerShopSettingsTools(server, api);
+  registerPrintScriptTools(server, api);
   return server;
 }
 
