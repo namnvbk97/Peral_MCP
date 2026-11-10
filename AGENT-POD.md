@@ -11,7 +11,10 @@ Khách không vẽ file in. Khách chỉ tải ảnh, gõ tên, đôi khi chọn
 
 3. **Mã khó, UI không làm được → print script (dữ liệu, không deploy).** Gắn Python sandbox vào **riêng** artwork (`od_artwork_set_print_script`) hoặc riêng một sản phẩm campaign (`od_campaign_set_print_script`); script chạy trên từng file in hoàn chỉnh (cả preview, nhỏ hơn — dùng `api.px()`), chỉ cho mã đó. Có bộ hàm ảnh: cắt, fit, xoay, dán, mask, silhouette / lót trắng, tint, chỉnh màu, bóng, warp, arc, chữ font studio, rembg. Đọc `od_print_script_guide` trước; kiểm bằng `od_artwork_print_file` / `od_campaign_print_file` (log + lỗi nằm trong warnings). Không sửa backend / frontend cho một mã. Chỉ đổi chữ / ảnh / ẩn hiện layer thì dùng layer `user-code` thường (chạy trước khi vẽ).
 
-Skill từng bước (Claude Code `.claude/skills`, Cursor `.cursor/skills`): `peral-add-product-base`, `peral-create-artwork` (quy trình chung) → `peral-artwork-print-canvas` (canvas / file in) + `peral-artwork-customer-options` (form khách: chấm màu cho màu đặc, màu chữ, font; xếp form gọn bằng `od_artwork_form_grid`), `peral-create-campaign`, `peral-product-structure`.
+**Kiến thức đi kèm MCP** (`knowledge/` trong repo MCP — mọi agent đọc được, không phụ thuộc máy):
+`od_knowledge_list` → `od_knowledge_get("skill:<tên>" | "recipe:<tên>")`. Recipe = loại sản phẩm đã làm thật (wine / skinny tumbler, light box, charm mica…): khổ in, layer, form, mockup, bài học, id mẫu. Làm sản phẩm cùng loại → đọc recipe trước; có artwork mẫu tốt → `od_artwork_recipe(artwork_id)` lấy cấu trúc thật. Xong một loại mới → thêm recipe (`od_artwork_recipe … save_as`) rồi commit.
+
+Skill từng bước (nguồn chuẩn: `knowledge/skills`; bản `.claude/skills`, `.cursor/skills` của máy chép từ đây bằng `node scripts/sync-skills.mjs`): `peral-add-product-base`, `peral-create-artwork` (quy trình chung) → `peral-artwork-print-canvas` (canvas / file in) + `peral-artwork-customer-options` (form khách: chấm màu cho màu đặc, màu chữ, font; xếp form gọn bằng `od_artwork_form_grid`), `peral-create-campaign`, `peral-product-structure`.
 
 **Kiểm tra sau mỗi bước** (0 FAIL mới báo xong):
 

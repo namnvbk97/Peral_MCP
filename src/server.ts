@@ -25,6 +25,7 @@ import { registerResearchTools } from "./tools/research.js";
 import { registerShopSettingsTools } from "./tools/shopSettings.js";
 import { registerPrintScriptTools } from "./tools/printScript.js";
 import { registerFormLayoutTools } from "./tools/formLayout.js";
+import { registerKnowledgeTools } from "./tools/knowledge.js";
 import { jsonText } from "./tools/common.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -71,7 +72,7 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
 
   server.tool(
     "od_agent_guide",
-    "Read this before creating a Product Base, artwork, or campaign. Then od_get_product_base_guide for the phôi you are designing: that is how its print file is made.",
+    "Read this before creating a Product Base, artwork, or campaign. Then od_knowledge_list (skills + recipes of product types already built — read the matching ones) and od_get_product_base_guide for the phôi you are designing: that is how its print file is made.",
     {},
     async () => ({
       content: [{ type: "text" as const, text: readFileSync(resolve(__dirname, "../AGENT-POD.md"), "utf8") }],
@@ -720,6 +721,7 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
   registerShopSettingsTools(server, api);
   registerPrintScriptTools(server, api);
   registerFormLayoutTools(server, api);
+  registerKnowledgeTools(server, api);
   return server;
 }
 
