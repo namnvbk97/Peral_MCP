@@ -60,10 +60,7 @@ Làm bằng tool: **`od_artwork_form_grid`** (thay cho `od_artwork_auto_form_lay
 - **Binding chỉ đổi 1 layer.** Bản sao tên ở mặt kia (`cloneOf`) không ăn màu → mỗi màu một bản sao, `condition` theo layer màu chữ:
   `{"action":"show","match_type":"all","dependencies":[{"element":"layer-textcolor","value":["black"]}]}`.
 - Màu chữ tự đổi theo nền (không hỏi khách): option nền có `textColor` + layer nền có `textLayerIds`.
-- **Màu chữ nằm ở 3 chỗ — đổi màu thì kiểm cả 3** (bài học MCSMT17102603):
-  1. `fill` của layer chữ (bị ghi đè nếu nền có `textColor`);
-  2. `textColor` của từng lựa chọn nền (thắng `fill`; trình sửa chưa có ô để sửa — sửa qua MCP);
-  3. campaign có ảnh chính kiểu scene (khối `gallery` → `props.scene.layers`, layer chữ `text-<optionId>` có `fill` riêng): live preview và ảnh chính trên trang bán vẽ tên bằng màu này. Sửa ở mọi campaign dùng artwork (`od_list_campaigns artwork_id=…`, sửa `page` qua `od_update_campaign`).
+- **Màu chữ chỉ đặt ở artwork** (từ 10/11/2026): màu hiệu lực = `textColor` của nền đang chọn (nếu nền đó điều khiển layer chữ), không có thì `fill` của layer chữ. Trình sửa: Fill của layer chữ ghi vào nền đang chọn ("Màu chữ · nền X"), danh sách nền có ô màu chữ từng nền. Ảnh chính campaign (scene, layer chữ `cloneFieldId`) **tự theo màu artwork**; chỉ khi bật "Màu riêng" (`fillMode: "custom"`) mới dùng `fill` riêng. Không sửa màu trong scene campaign nữa.
   Kiểm bằng cả `od_campaign_print_file` **và** `od_campaign_live_preview`. **Không dùng cùng lúc** với ô màu chữ (cái nào chạy sau sẽ ghi đè) — khi thêm ô màu chữ thì xoá `textColor` / `textLayerIds`.
 
 ## 4. Chọn font
