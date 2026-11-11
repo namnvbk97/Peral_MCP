@@ -39,6 +39,7 @@ Khi một artwork / campaign cần thứ editor không làm được (lót trắ
 2. **Một sản phẩm cho cả phôi.** Phôi có option kiểu dáng (Style) với template riêng → `od_campaign_update_product` với `template_by_option: {"Style": {"Heart": "<tpl-heart>", "Circle": "<tpl-circle>"}}`. Khách chọn Style bằng ô ảnh (thumbnail có hình dáng), không combobox.
 3. Chỉ bật biến thể **artwork in được**: artwork 1 mặt thì không bật TWO SIDES; artwork chưa có template cho một kích thước (vd 2x3) thì để tắt.
 4. Thêm phôi / artwork khác vào cùng campaign: `od_campaign_add_product`.
+5. **Đặt thiết kế lên phôi (Placement) tự chạy.** Sản phẩm mới có placement auto-fit: mỗi file in khác tỉ lệ trang thiết kế > 2% được fit theo `shapeFamily` của format (round → contain · wrap → cover nếu lệch ≤ 10% · chữ nhật / free → cover khi có nền tràn, không thì contain). Gọi `od_campaign_placement` (action `check`) để lint + xuất thử. **Chỉ chỉnh khi lint báo** (P-FIT bị cắt, P-SAFE sát mép, P-TINY chữ < 6pt, P-GAP nền hở): `action: "set"`, `overrides: {"<size>": {fit, align, zoom, offsetX, offsetY}}`, rồi check lại. P-FMT (lệch > 10%) cần format riêng trong artwork, không chỉnh riêng. Hình dáng sai → `od_design_format_shape` (cho mọi campaign của thiết kế) hoặc `shape_family` trên placement (chỉ sản phẩm này). Sản phẩm cũ chưa có placement giữ nguyên file in; `action: "auto"` trên campaign đang bán cần `confirm: true` sau khi user xem file in thử.
 
 ## 3. Giá
 
@@ -64,6 +65,7 @@ Khi một artwork / campaign cần thứ editor không làm được (lót trắ
    ```
    Lệnh này chạy validate, kiểm giá (bán > vốn, gạch ≥ bán), `template_by_option` đủ mọi Style, và **xuất file in thử từng biến thể** (không tạo đơn). Phải 0 FAIL; đọc kỹ WARN của file in.
 3. Mở vài file in ra xem bằng mắt (1 mặt, 2 mặt, mỗi Style).
+   Mỗi nhóm fit khác nhau: `od_render_matrix` (một file in thử cho mỗi format × khổ file × fit); `od_campaign_check` liệt kê tier + fit từng file + lint.
 4. `od_publish_campaign` khi user đồng ý. Publish đẩy sản phẩm lên Shopify thật — hỏi trước.
 
 ## Không được
