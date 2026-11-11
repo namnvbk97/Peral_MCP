@@ -89,7 +89,7 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
 
   server.tool(
     "od_list_orders",
-    "List product orders (optional store_id / status filter).",
+    "List product orders (optional store_id / status filter). Status = one flat list: draft, rendering, file_error, review, ready, in_production, at_warehouse, shipped, delivered, on_hold, cancelled. Each order has `actions` (what od_order_action may do now) and `nextStep`.",
     {
       store_id: z.string().optional(),
       status: z.string().optional(),
@@ -127,14 +127,14 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
           personalization: args.personalization || "",
           total: args.total ?? 0,
           channel: args.channel || "facebook",
-          status: args.status || "new",
+          status: args.status || "draft",
         }),
       ),
   );
 
   server.tool(
     "od_patch_order",
-    "Update order fields / status (new|confirmed|printing|shipping|done|cancelled).",
+    "Update order fields (note / variant). Status moves go through od_order_action; a status here is read as its action (on_hold → hold, cancelled → cancel, delivered → complete).",
     {
       order_id: z.string(),
       status: z.string().optional(),
@@ -149,6 +149,20 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
           variant,
         }),
       ),
+  );
+
+  server.tool(
+    "od_order_action",
+    `Order status button. The status is computed from the work done (print files, approval, sent to fulfiller, tracking); these are the moves a person makes:
+start (draft → processing) · approve / unapprove (print files) · hold / resume · cancel / restore (→ draft) · complete / reopen · delete (draft or cancelled, never sent to a fulfiller; removes print files too, a summary stays in the shop activity log).
+Held / cancelled / draft orders cannot be sent to a fulfiller. Check the order's \`actions\` first.`,
+    {
+      order_id: z.string(),
+      action: z.enum(["start", "approve", "unapprove", "hold", "resume", "cancel", "restore", "complete", "reopen", "delete"]),
+      reason: z.string().optional(),
+    },
+    async ({ order_id, action, reason }) =>
+      jsonText(await api.post(`/product/orders/${order_id}/action`, { action, reason: reason || "" })),
   );
 
   server.tool(
