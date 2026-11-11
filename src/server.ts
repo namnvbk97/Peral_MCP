@@ -26,6 +26,7 @@ import { registerShopSettingsTools } from "./tools/shopSettings.js";
 import { registerPrintScriptTools } from "./tools/printScript.js";
 import { registerFormLayoutTools } from "./tools/formLayout.js";
 import { registerKnowledgeTools } from "./tools/knowledge.js";
+import { registerPlacementTools } from "./tools/placement.js";
 import { jsonText } from "./tools/common.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -722,6 +723,7 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
   registerPrintScriptTools(server, api);
   registerFormLayoutTools(server, api);
   registerKnowledgeTools(server, api);
+  registerPlacementTools(server, api);
   return server;
 }
 
