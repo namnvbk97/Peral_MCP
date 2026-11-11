@@ -105,6 +105,7 @@ export const LAYER_TYPES = [
   "json-list",
   "font",
   "color",
+  "move",
   "blank",
 ] as const;
 

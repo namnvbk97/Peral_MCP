@@ -13,6 +13,17 @@ description: >-
 
 Form khách = các layer tương tác của artwork theo thứ tự `positions`. Khách chỉ thấy form, không thấy layer. Phần canvas / file in: skill `peral-artwork-print-canvas`. Quy trình chung: `peral-create-artwork`.
 
+## 0. Nhiều mẫu trong một artwork (1 Pet / 2 Pets / 3 Pets)
+
+Mỗi **tab** trên thanh template là một mẫu riêng (Teeinblue Template): layer và ô form thuộc tab đang mở. Khách chọn mẫu trước, form đổi theo tab đó. Một tab thì form không hiện ô chọn mẫu.
+
+- **Tools → Template**: danh sách template của đúng artwork đó. **Thêm bản sao** (giữ layer), **Thêm trống** (chỉ Product Base), **Nhân bản**, **Xóa** (còn ít nhất một). Đổi tên ngay trên dòng. **Save** mới ghi. Thanh trên canvas (+ / ⧉ / 🗑) làm cùng việc.
+- **Gom** (bảng Layers): tick layer → đặt tên → **Tạo tab**. Tab mới có Product Base + các layer đã tick. Tab cũ giữ nguyên.
+- **✎**: ảnh khách chọn (thumbnail), **Ẩn trên cửa hàng**, **Mẫu gốc**. Mẫu gốc rồi **Đồng bộ option** chép nhãn / bắt buộc / lựa chọn / kiểu hiện sang layer cùng id ở tab khác. Vị trí và cỡ không đổi — muốn 1 Pet thì nhân bản mẫu 3 Pet rồi ẩn layer Pet 2 và Pet 3.
+- **Khách chọn**: nhãn trên form, hiện bằng nút (có ảnh thì hiện ảnh) hoặc danh sách.
+
+Không dùng tab này để đổi màu chữ theo nền. Việc đó vẫn là `condition` trên từng layer (§3).
+
 ## 1. Chỉ hỏi thứ khách thật sự chọn
 
 Thứ tự chuẩn: **Nền / màu → Ảnh → Tên → Màu chữ → Font → tuỳ chọn phụ**. Layer chỉ để in (static, clone, cut, user-code, print script) đặt `customizationType: "no_customization"` — không thành ô nhập thứ hai.
@@ -62,7 +73,7 @@ Làm bằng tool: **`od_artwork_form_grid`** (thay cho `od_artwork_auto_form_lay
 - **Màu chữ tự đổi theo nền (không hỏi khách) → dùng `condition`**, không thêm thuộc tính riêng cho mã (mẫu: MCSMT17102603):
   1. Ô tên gốc `text` đặt `formOnly: true` ("Ẩn trên canvas": vẫn là ô nhập, không in).
   2. Mỗi option nền × mỗi mặt một `text` `cloneOf` ô gốc, `fill` = màu chữ của nền đó, `customizationType: "no_customization"`, `condition` `{"action":"show","match_type":"all","dependencies":[{"element":"layer-bg","value":["<id nền>"]}]}`.
-  3. Bảng Layers tự chia **tab theo option** (Tất cả / từng nền, kiểu Teeinblue): bấm tab nền nào thì thấy layer chữ của nền đó và canvas đổi theo — merchant sửa màu ngay trên layer đó.
+  3. Bảng Layers tự chia **một tab cho mỗi nền** (không có tab Tất cả). Ảnh nền và layer không gắn điều kiện hiện trên mọi tab; layer chữ chỉ hiện ở tab nền của nó. Bấm tab thì canvas đổi theo — merchant sửa màu ngay trên layer đó.
   4. Xoá `textColor` ở option và `textLayerId(s)` ở layer nền (cách cũ) để không ghi đè.
   5. Ảnh chính campaign: layer chữ của scene đặt `fillMode: "custom"` + `fill` theo từng nền.
   Kiểm bằng `od_artwork_print_file` (từng nền, cả 2 mặt) **và** `od_campaign_live_preview`.
