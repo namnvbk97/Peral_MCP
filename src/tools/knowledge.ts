@@ -77,7 +77,7 @@ function layerLine(L: Layer): string {
   const bits: string[] = [];
   const box = ["x", "y", "width", "height"].map((k) => n(L[k])).join(",");
   bits.push(`box ${box}`);
-  for (const k of ["side", "rotation", "fit", "fitAlign", "trim", "removeBackground", "cloneOf", "fontFamily", "fontSize",
+  for (const k of ["side", "rotation", "fit", "fitAlign", "trim", "removeBackground", "photoStyles", "cloneOf", "fontFamily", "fontSize",
                    "fill", "textCase", "autoscale", "maxLength", "displayType", "required", "defaultValue", "bindTargetLayerId",
                    "bindMode", "flipH", "cutPaddingPx", "stage", "customizationType"]) {
     const v = L[k];

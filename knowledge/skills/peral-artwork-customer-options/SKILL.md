@@ -30,7 +30,7 @@ Thứ tự chuẩn: **Nền / màu → Ảnh → Tên → Màu chữ → Font �
 
 | Khách làm gì | Layer | Cài đặt bắt buộc |
 | --- | --- | --- |
-| Tải ảnh pet / người | `photo-upload` | `formLabel`, `required`, `removeBackground: true` khi in kiểu cut-out; `src` = ảnh mẫu **thật** đã xoá nền |
+| Tải ảnh pet / người | `photo-upload` | `formLabel`, `required`, `removeBackground: true` khi in kiểu cut-out; `photoStyles: true` cho khách chọn hiệu ứng sau khi tải (Hoạt hình, Comic, Pastel, Màu nước, Chì màu, Phác thảo — filter CPU, không AI); `src` = ảnh mẫu **thật** đã xoá nền |
 | Gõ tên / chữ | `text` | `maxLength` (tên 12–18), `autoscale`, `defaultValue` mẫu, `required` |
 | Chọn nền in (ảnh / hoạ tiết) | `clipart-category` | `value` = ảnh nền **đúng khổ trang in**, `thumbnail` = swatch nhỏ |
 | Chọn màu đặc (chữ, nền trơn) | `color` | `options` `value` hex, `bindTargetLayerId` + `bindMode: "fill"` |
