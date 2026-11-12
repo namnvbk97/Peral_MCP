@@ -17,6 +17,8 @@ Campaign = **một artwork trên một Product Base đem bán**: biến thể b�
 
 Luật chung: `webtools/AGENTS.md`, `webtools/mcp/AGENT-POD.md`, skill `peral-product-structure`. Mọi thay đổi qua MCP `od_*`.
 
+**Trang bán (`page.blocks`)**: xếp khối theo `x,y,w,h` — skill `peral-campaign-page-layout` (không chồng photo/text/size, cùng cột `x=556 w=492`, GAP 12–16).
+
 
 ## Mã đặc biệt — print script (không sửa code, không deploy)
 
