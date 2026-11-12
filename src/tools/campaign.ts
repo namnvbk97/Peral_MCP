@@ -220,10 +220,10 @@ export function registerCampaignTools(server: McpServer, api: WebtoolsClient): v
 
   server.tool(
     "od_campaign_add_product",
-    "CAMPAIGN: add Artwork × Product Base (variants auto from base, priced by rule). First product = default.",
+    "CAMPAIGN: add Artwork × Product Base (variants auto from base, priced by rule). First product = default. No artwork_id = Product Base only (needs product_slug).",
     {
       campaign_id: z.string(),
-      artwork_id: z.string(),
+      artwork_id: z.string().optional(),
       product_slug: z.string().optional(),
       template_ids: z.array(z.string()).optional(),
       sizes: z.array(z.string()).optional(),
