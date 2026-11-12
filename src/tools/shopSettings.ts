@@ -69,6 +69,14 @@ export function registerShopSettingsTools(server: McpServer, api: WebtoolsClient
   );
 
   server.tool(
+    "od_set_store_default_campaign",
+    "SHOP: set (or clear with null) the shop's template campaign (Store → Campaign). New campaigns of the shop copy its page blocks — layout, size-block option display, button labels — and its extra form fields once, then are edited on their own.",
+    { store_id: z.string(), campaign_id: z.string().nullable() },
+    async ({ store_id, campaign_id }) =>
+      jsonText(await api.patch(`/stores/${enc(store_id)}/default-campaign`, { campaignId: campaign_id })),
+  );
+
+  server.tool(
     "od_set_shop_flow",
     "Set how the shop gets goods to buyers. dropship: print check → order fulfiller → fulfiller ships to the buyer's address. warehouse: print check → order fulfiller (ships to a shop address, default or picked per order) → goods received → shop ships to the buyer. marketplace: print check → enter the TikTok/Shopee label (tracking + label URL) → order fulfiller with the label → fulfiller ships to the buyer.",
     { store_id: z.string(), flow: z.enum(["dropship", "warehouse", "marketplace"]) },
