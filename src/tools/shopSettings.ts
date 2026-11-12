@@ -70,7 +70,7 @@ export function registerShopSettingsTools(server: McpServer, api: WebtoolsClient
 
   server.tool(
     "od_set_store_default_campaign",
-    "SHOP: set (or clear with null) the shop's template campaign (Store → Campaign). New campaigns of the shop copy its page blocks — layout, size-block option display, button labels — and its extra form fields once, then are edited on their own.",
+    "SHOP: set (or clear with null) which Store → Campaign template is the default. Templates are shopTemplate campaigns (hidden from Campaigns list). New sell campaigns copy that template's page + form once. Prefer an artwork or free template via templateKind.",
     { store_id: z.string(), campaign_id: z.string().nullable() },
     async ({ store_id, campaign_id }) =>
       jsonText(await api.patch(`/stores/${enc(store_id)}/default-campaign`, { campaignId: campaign_id })),
