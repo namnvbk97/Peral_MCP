@@ -14,10 +14,11 @@ example: CCVLG29102602 — artwork 2ec71025-b338-4f00-b592-f1821dcaf978, campaig
 | id | loại | cài đặt |
 | --- | --- | --- |
 | layer-photo | photo-upload | band in: x 50 y 639 w 408 h 330 · removeBackground · contain · **fitAlign top** · trim |
-| layer-cut | cut-silhouette | cloneOf layer-photo, cutPaddingPx 12, cùng khung ở band cut (y 130) |
-| layer-ring | static-photo | 508×508 tại 0,0: vòng treo Ø58 (lỗ trong suốt) + nút nối Ø72, tách từ PSD (Ellipse 1 + Layer 7) |
+| layer-cut | cut-silhouette | cloneOf layer-photo, cutPaddingPx 5–12, cùng khung ở band cut (y 130) |
+| layer-ring | static-photo | Hình số 8 (hanging) — **ẩn** (`visible: false`); chỉ làm asset nguồn |
+| Hanging + solid cut | user-code `stage: print` | Print script: fill lỗ silhouette (blur→threshold); neo hanging theo **body_top** (hàng opaque rộng ≥200px, không lấy tai); `stick_out` ~42px — chỉ vòng trên số 8 thừa ra, **đuôi số 8 lấp gần hết trong shape cut** |
 
-Ảnh `fitAlign: top` để đỉnh dáng chạm nút nối của vòng treo.
+Ảnh `fitAlign: top`. Không sửa web — chỉ print script trên artwork.
 
 ## Campaign
 Chỉ bật ACRYLIC / ONE SIDE × 13 màu dây (Color = màu dây đeo). Giá mặc định 4.99 → cần merchant xem lại.
