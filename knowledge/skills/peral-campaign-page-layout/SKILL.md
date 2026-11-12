@@ -63,7 +63,8 @@ Hai ô **cạnh nhau** (ảnh | tên) chỉ khi cả hai `h` gần nhau và tổ
 ## 4. Khối `size` (Color / Size / Style)
 
 - Cao thật phụ thuộc số hàng option. Ước lượng khi gen: Color chấm ≈ 40–70; Size 1–2 hàng nút ≈ 50–90; Style 1 hàng ≈ 50; cộng nhãn ≈ **+28 / option**. Áo TSV 3 option ≈ **h 280–320**.
-- Sau khi set `optionDisplay` (color swatches / buttons), nếu preview thấy cắt nút → tăng `h`, rồi **reflow** khối dưới (§2).
+- `props.optionDisplay[<OptionName>].style` — đủ kiểu: `buttons` · `color` · `image` (Image Picker) · `dropdown` · `combobox` · `radio` · `listbox` · `tabs`. Màu: `swatches`; ảnh: `images` (URL) hoặc `optionThumbs` / template bind.
+- Sau khi set `optionDisplay`, nếu preview thấy cắt nút → tăng `h`, rồi **reflow** khối dưới (§2).
 - Giá bán **đồng nhất** → `props.showPrice: false` (giá chỉ ở khối `price`). Giá lệch theo size/style → `showPrice: true` (nút option cuối hiện giá).
 
 ## 5. Quy trình agent (MCP)
