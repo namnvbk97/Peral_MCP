@@ -134,19 +134,21 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
 
   server.tool(
     "od_patch_order",
-    "Update order fields (note / variant). Status moves go through od_order_action; a status here is read as its action (on_hold → hold, cancelled → cancel, delivered → complete).",
+    "Update order fields (note / variant / shipping address). Status moves go through od_order_action; a status here is read as its action (on_hold → hold, cancelled → cancel, delivered → complete). shipping_address replaces the whole address (snake_case: address1, address2, city, province, province_code, zip, country, country_code, name, phone) — read the order first and send every field; for VN use the SPX 2-level names (city = Phường/Xã, province = Tỉnh/Thành), e.g. from POST /product/orders/normalize-address.",
     {
       order_id: z.string(),
       status: z.string().optional(),
       note: z.string().optional(),
       variant: z.string().optional(),
+      shipping_address: z.record(z.string()).optional(),
     },
-    async ({ order_id, status, note, variant }) =>
+    async ({ order_id, status, note, variant, shipping_address }) =>
       jsonText(
         await api.patch(`/product/orders/${order_id}`, {
           status,
           note,
           variant,
+          ...(shipping_address ? { shippingAddress: shipping_address } : {}),
         }),
       ),
   );
