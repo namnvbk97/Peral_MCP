@@ -116,6 +116,11 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
       total: z.number().optional(),
       channel: z.string().optional(),
       status: z.string().optional(),
+      cod_enabled: z
+        .boolean()
+        .optional()
+        .describe("Thu hộ tiền (COD). Default: on (off when financial status is paid). Dropship orders never collect."),
+      cod: z.number().int().min(0).optional().describe("COD amount in VND; omitted = the order total"),
     },
     async (args) =>
       jsonText(
@@ -128,6 +133,8 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
           total: args.total ?? 0,
           channel: args.channel || "facebook",
           status: args.status || "draft",
+          ...(args.cod_enabled !== undefined ? { codEnabled: args.cod_enabled } : {}),
+          ...(args.cod !== undefined ? { cod: args.cod } : {}),
         }),
       ),
   );
@@ -141,16 +148,23 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
       note: z.string().optional(),
       variant: z.string().optional(),
       shipping_address: z.record(z.string()).optional(),
+      cod_enabled: z.boolean().optional().describe("Thu hộ tiền (COD) on / off; ignored for dropship orders"),
+      cod: z.number().int().min(0).optional().describe("COD amount in VND"),
     },
-    async ({ order_id, status, note, variant, shipping_address }) =>
-      jsonText(
+    async ({ order_id, status, note, variant, shipping_address, cod_enabled, cod }) => {
+      const ops: Record<string, unknown> = {};
+      if (cod_enabled !== undefined) ops.codEnabled = cod_enabled;
+      if (cod !== undefined) ops.cod = cod;
+      return jsonText(
         await api.patch(`/product/orders/${order_id}`, {
           status,
           note,
           variant,
           ...(shipping_address ? { shippingAddress: shipping_address } : {}),
+          ...(Object.keys(ops).length ? { ops } : {}),
         }),
-      ),
+      );
+    },
   );
 
   server.tool(
