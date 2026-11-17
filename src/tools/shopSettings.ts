@@ -83,6 +83,31 @@ export function registerShopSettingsTools(server: McpServer, api: WebtoolsClient
     async ({ store_id, flow }) => jsonText(await api.put(`/integrations/partners/${enc(store_id)}/flow`, { flow })),
   );
 
+  server.tool(
+    "od_set_order_defaults",
+    "SHOP (Shop Settings → Quy trình đi đơn): defaults new orders and carrier sends use when nobody picks. Only the fields given change; od_shop_settings shows the current ones (orderDefaults). cod_default: new orders tick Thu hộ (amount = order total; dropship never collects). cod_skip_paid: not for orders that arrive paid. Viettel services are labels from the carrier list, e.g. 'PHS - Nội tỉnh tiết kiệm thỏa thuận' (same province), 'LCOD - TMĐT tiết kiệm thỏa thuận' (other province).",
+    {
+      store_id: z.string(),
+      cod_default: z.boolean().optional(),
+      cod_skip_paid: z.boolean().optional(),
+      payer: z.enum(["Người gửi trả", "Người nhận trả"]).optional(),
+      default_weight_gram: z.number().int().min(1).max(100000).optional().describe("per item when the Product Base has no packed weight"),
+      vtp_service_intra: z.string().optional(),
+      vtp_service_inter: z.string().optional(),
+      spx_allow_view: z.boolean().optional(),
+    },
+    async (a) => {
+      const body: Record<string, unknown> = {};
+      const map: Array<[keyof typeof a, string]> = [
+        ["cod_default", "codDefault"], ["cod_skip_paid", "codSkipPaid"], ["payer", "payer"],
+        ["default_weight_gram", "defaultWeightGram"], ["vtp_service_intra", "vtpServiceIntra"],
+        ["vtp_service_inter", "vtpServiceInter"], ["spx_allow_view", "spxAllowView"],
+      ];
+      for (const [k, key] of map) if (a[k] !== undefined) body[key] = a[k];
+      return jsonText(await api.patch(`/stores/${enc(a.store_id)}/order-defaults`, body));
+    },
+  );
+
   const addressShape = {
     label: z.string().optional().describe("short name, e.g. Kho Gia Lâm"),
     name: z.string().optional().describe("receiver name"),
