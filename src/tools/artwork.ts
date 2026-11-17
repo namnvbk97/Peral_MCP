@@ -495,7 +495,12 @@ export function registerArtworkTools(server: McpServer, api: WebtoolsClient): vo
     "od_artwork_add_layer",
     "ARTWORK: add a layer by type with editor defaults (text, photo-upload, clipart-category, additional-option, color, static-photo, blank…). " +
       "props override defaults (x/y/width/height, text, fontFamily, formLabel, options, condition, bindTargetLayerId…). " +
-      "Interactive layers auto-join form positions. Optional image sets src.",
+      "Interactive layers auto-join form positions. Optional image sets src. " +
+      "RULE (same tools as the editor UI): customer fields are Customer Form controls with formOnly:true — " +
+      "text (1 line) / paragraph (Multi-line Text) / photo-upload / clipart / option — and write onto canvas layers through events: " +
+      "photo-upload → place-image ({on:'upload',target:[id],prop:'src',frame:true}), text/paragraph → static-text ({on:'input',target:[id],prop:'text',from:'typed'}). " +
+      "Never put photo-upload or text straight on the canvas (old style). place-image = frame (layer box, the limit) + imageBox (image ROI inside it). " +
+      "The artwork is the print file only; the customer-facing preview is built in the campaign's Mockup Editor (Edit Campaign).",
     {
       artwork_id: z.string(),
       type: z.enum(LAYER_TYPES),

@@ -29,6 +29,38 @@ cd webtools/mcp && npx tsx scripts/call.ts open-designer od_get_artwork '{"artwo
 cd webtools/mcp && npx tsx scripts/call.ts open-designer od_artwork_update_layer @args.json
 ```
 
+## Luật tool: chỉ dùng tool có trên thanh Tools của UI
+
+Panel Layers chia đôi đúng như vậy: trên là **Canvas** (in ra file), dưới là **Customer Form** (ô khách điền, không vẽ lên canvas).
+
+| Nhóm | Tool trên UI | `type` | Ghi chú |
+| --- | --- | --- | --- |
+| Canvas | Static Image | `static-photo` | ảnh design cố định |
+| Canvas | **Place Image** | `place-image` | chỗ ảnh khách: **Khung** (layer box, nét đứt cam = vùng giới hạn, ảnh ra ngoài bị cắt) + **ROI Ảnh** (`imageBox`, px tính từ góc khung) |
+| Canvas | Static Text | `static-text` | chữ in (tên khách đổ vào đây) |
+| Canvas | Cut Silhouette | `cut-silhouette` | khuôn cắt |
+| Form | Text | `text` + `formOnly: true` | 1 dòng |
+| Form | **Multi-line Text** | `paragraph` + `formOnly: true` | khách bấm Enter xuống dòng; `autoscale` co theo cả chiều rộng lẫn chiều cao |
+| Form | Photo Upload | `photo-upload` + `formOnly: true` | |
+| Form | Clipart / Option / Move / Slot Group | như UI | |
+
+Ô form đổ dữ liệu sang lớp canvas bằng **events** (không vẽ thẳng):
+- Photo Upload → Place Image: `{"id":"ev-upload","on":"upload","target":["<place-image id>"],"prop":"src","frame":true}`
+- Text / Multi-line Text → Static Text: `{"id":"ev-input","on":"input","target":["<static-text id>"],"prop":"text","from":"typed"}`
+- Màu chữ (`color`): `bindTargetLayerId` = id Static Text, `bindMode: "fill"`.
+
+**Không dùng kiểu cũ**: `photo-upload` / `text` vẽ thẳng trên canvas (không `formOnly`). Artwork cũ còn kiểu này thì chuyển, **giữ nguyên id ô form** (đơn và câu trả lời cũ khớp theo id), thêm lớp canvas mới `<id>-place` / `<id>-text` ngay trên nó trong thứ tự lớp, rồi so file in trước / sau. Mẫu đã chuyển: **PCVLG08102601** (ốp lưng 1–4 bé).
+
+Place Image đặt thế nào:
+- ROI Ảnh = đúng chỗ ảnh mẫu (giữ `fit`, `fitAlign`, `trim` như cũ) → file in không đổi.
+- Khung đủ rộng để khách kéo / thu nhỏ ảnh thoải mái, nhưng trong vùng in: trải tới **đường cắt của phôi + ~20 px dư** (đo trên template của xưởng), tránh vùng camera / lỗ / chữ quan trọng. Ảnh mẫu chạm mép đáy thì khung xuống tới mép đáy, không dừng ở vùng an toàn.
+- Ở bước Place, ảnh khách bắt đầu tại ROI Ảnh, kéo ra ngoài Khung thì bị cắt.
+
+## Artwork ≠ Mockup Editor
+
+- **Artwork = file in.** Chỉ lo đúng khổ, đúng vị trí, đúng nội dung in. Không dựng cảnh, bóng, ảnh phôi trong artwork để "preview cho đẹp".
+- **Mockup Editor trong Edit Campaign** (ảnh chính / Main Image scene của campaign) = **preview giống ảnh thật**: ghép artwork lên ảnh chụp thật của phôi cho khách xem khi điền form. Preview sai → sửa ở Mockup Editor của campaign, không sửa artwork.
+
 ## Quy trình
 
 1. **Phôi**: tìm theo mã sản phẩm (tiền tố mã = `productCode` phôi, ví dụ TMB / CCV / SX / WST). Danh sách mặc định có thể chỉ hiện phôi active — xem cả phôi archive của shop. `od_get_print_layouts` + `od_get_product_base_guide`. Phôi chưa có layout → khai báo trước (skill `peral-add-product-base`, hỏi user).

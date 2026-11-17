@@ -24,14 +24,18 @@ Mỗi **tab** trên thanh template là một mẫu riêng (Teeinblue Template): 
 
 Không dùng tab này để đổi màu chữ theo nền. Việc đó vẫn là `condition` trên từng layer (§3).
 
+## 0. Ô form không vẽ lên canvas
+
+Chỉ dùng tool có trên thanh Tools: ô khách điền nằm ở nhóm **Customer Form** (`formOnly: true`), đổ dữ liệu sang lớp canvas (Place Image / Static Text) bằng events. **Không** dùng `photo-upload` / `text` vẽ thẳng trên canvas (kiểu cũ). Bảng tool, mẫu event và cách chuyển artwork cũ: skill `peral-create-artwork` → "Luật tool".
+
 ## 1. Chỉ hỏi thứ khách thật sự chọn
 
 Thứ tự chuẩn: **Nền / màu → Ảnh → Tên → Màu chữ → Font → tuỳ chọn phụ**. Layer chỉ để in (static, clone, cut, user-code, print script) đặt `customizationType: "no_customization"` — không thành ô nhập thứ hai.
 
 | Khách làm gì | Layer | Cài đặt bắt buộc |
 | --- | --- | --- |
-| Tải ảnh pet / người | `photo-upload` | `formLabel`, `required`, `removeBackground: true` khi in kiểu cut-out; `photoStyles: true` cho khách chọn hiệu ứng sau khi tải (Hoạt hình, Comic, Pastel, Màu nước, Chì màu, Phác thảo — filter CPU, không AI); `src` = ảnh mẫu **thật** đã xoá nền |
-| Gõ tên / chữ | `text` | `maxLength` (tên 12–18), `autoscale`, `defaultValue` mẫu, `required` |
+| Tải ảnh pet / người | `photo-upload` **`formOnly: true`** + event `upload` → **Place Image** trên canvas | `formLabel`, `required`, `removeBackground: true` khi in kiểu cut-out; `photoStyles: true` cho khách chọn hiệu ứng sau khi tải (Hoạt hình, Comic, Pastel, Màu nước, Chì màu, Phác thảo — filter CPU, không AI); `src` = ảnh mẫu **thật** đã xoá nền |
+| Gõ tên / chữ | `text` (1 dòng) hoặc **`paragraph` = Multi-line Text** (cho xuống dòng), **`formOnly: true`** + event `input` → **Static Text** trên canvas | `maxLength` (tên 12–18, nhiều tên ~40), `defaultValue` mẫu, `required`; `autoscale` đặt ở Static Text |
 | Chọn nền in (ảnh / hoạ tiết) | `clipart-category` | `value` = ảnh nền **đúng khổ trang in**, `thumbnail` = swatch nhỏ |
 | Chọn màu đặc (chữ, nền trơn) | `color` | `options` `value` hex, `bindTargetLayerId` + `bindMode: "fill"` |
 | Chọn font | `additional-option` (ảnh mẫu từng font) | xem §4 |

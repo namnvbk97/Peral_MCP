@@ -25,9 +25,9 @@ Canvas artwork **chính là file in**: mỗi print layout của phôi là một 
 | Việc | Layer | Lưu ý |
 | --- | --- | --- |
 | Nền / thiết kế cố định | `static-photo` (hoặc `clipart-category` khi khách chọn nền) | full bleed đúng khổ trang; **không** đặt vào layer Product Base (blank) — blank không in |
-| Ảnh khách | `photo-upload` | `fit: "contain"`, `fitAlign: "bottom"` (pet "ngồi" mép dưới) hoặc `"top"` (charm cần chạm vòng treo), `trim: true` |
-| Tên | `text` | font studio, `autoscale`, `textCase`; chữ dọc: `rotation: -90`, đặt `x` = mép trái, `y` = mép **dưới** khung, `width` = chiều dài chữ |
-| Bản sao mặt khác | `static-photo` / `text` `cloneOf` | `customizationType: "no_customization"` |
+| Ảnh khách | **`place-image`** (Photo Upload `formOnly` đổ vào qua event `upload`) | Khung = vùng khách được kéo ảnh (tới đường cắt phôi + ~20 px dư); `imageBox` = ROI Ảnh mẫu; `fit: "contain"`, `fitAlign: "bottom"` (pet "ngồi" mép dưới) hoặc `"top"` (charm cần chạm vòng treo), `trim: true` |
+| Tên | **`static-text`** (Text / Multi-line Text `formOnly` đổ vào qua event `input`) | font studio, `autoscale`, `textCase`; chữ dọc: `rotation: -90`, đặt `x` = mép trái, `y` = mép **dưới** khung, `width` = chiều dài chữ |
+| Bản sao mặt khác | `static-photo` / `static-text` `cloneOf` | `customizationType: "no_customization"` |
 | Khuôn cắt theo ảnh khách | `cut-silhouette` `cloneOf` ảnh | `cutPaddingPx` 12–24, cùng khung với ảnh ở band in |
 | Vòng treo / dải nối | `static-photo` ở band cut | hình đen, lỗ trong suốt; tách từ PSD xưởng nếu có |
 
