@@ -85,7 +85,7 @@ export function registerShopSettingsTools(server: McpServer, api: WebtoolsClient
 
   server.tool(
     "od_set_order_defaults",
-    "SHOP (Shop Settings → Quy trình đi đơn): defaults new orders and carrier sends use when nobody picks. Only the fields given change; od_shop_settings shows the current ones (orderDefaults). cod_default: new orders tick Thu hộ (amount = order total; dropship never collects). cod_skip_paid: not for orders that arrive paid. Viettel services are labels from the carrier list, e.g. 'PHS - Nội tỉnh tiết kiệm thỏa thuận' (same province), 'LCOD - TMĐT tiết kiệm thỏa thuận' (other province).",
+    "SHOP (Shop Settings → Quy trình đi đơn): defaults new orders and carrier sends use when nobody picks, plus the Tự động steps (all off until turned on). Only the fields given change; od_shop_settings shows the current ones (orderDefaults). cod_default: new orders tick Thu hộ (amount = order total; dropship never collects). cod_skip_paid: not for orders that arrive paid. Viettel services are labels from the carrier list, e.g. 'PHS - Nội tỉnh tiết kiệm thỏa thuận' (same province), 'LCOD - TMĐT tiết kiệm thỏa thuận' (other province).",
     {
       store_id: z.string(),
       cod_default: z.boolean().optional(),
@@ -95,13 +95,21 @@ export function registerShopSettingsTools(server: McpServer, api: WebtoolsClient
       vtp_service_intra: z.string().optional(),
       vtp_service_inter: z.string().optional(),
       spx_allow_view: z.boolean().optional(),
+      vtp_voucher: z.string().optional().describe("Viettel Post's own promo code (ORDER_VOUCHER, lowers the carrier fee); '' = none"),
+      auto_approve_print: z.boolean().optional().describe("tick 'Đã kiểm tra file in' when every print file passes the check"),
+      auto_send_fulfiller: z.boolean().optional().describe("send approved orders to the fulfiller at send_hours (warehouse: merged)"),
+      send_hours: z.array(z.number().int().min(0).max(23)).optional().describe("Vietnam-time hours for auto_send_fulfiller, e.g. [9, 15]"),
+      auto_ship_on_received: z.boolean().optional().describe("warehouse: create the Viettel bill when 'Hàng về kho' is ticked"),
+      auto_cod_reconcile: z.boolean().optional().describe("tick 'Đã đối soát thu hộ' when the carrier reports delivered"),
     },
     async (a) => {
       const body: Record<string, unknown> = {};
       const map: Array<[keyof typeof a, string]> = [
         ["cod_default", "codDefault"], ["cod_skip_paid", "codSkipPaid"], ["payer", "payer"],
         ["default_weight_gram", "defaultWeightGram"], ["vtp_service_intra", "vtpServiceIntra"],
-        ["vtp_service_inter", "vtpServiceInter"], ["spx_allow_view", "spxAllowView"],
+        ["vtp_service_inter", "vtpServiceInter"], ["spx_allow_view", "spxAllowView"], ["vtp_voucher", "vtpVoucher"],
+        ["auto_approve_print", "autoApprovePrint"], ["auto_send_fulfiller", "autoSendFulfiller"], ["send_hours", "sendHours"],
+        ["auto_ship_on_received", "autoShipOnReceived"], ["auto_cod_reconcile", "autoCodReconcile"],
       ];
       for (const [k, key] of map) if (a[k] !== undefined) body[key] = a[k];
       return jsonText(await api.patch(`/stores/${enc(a.store_id)}/order-defaults`, body));
