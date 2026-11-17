@@ -79,6 +79,7 @@ export const LAYER_TYPES = [
   "paragraph",
   "curve-text",
   "text-other",
+  "static-text",
   "static-photo",
   "place-image",
   "cut-silhouette",
