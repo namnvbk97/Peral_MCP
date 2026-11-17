@@ -80,6 +80,7 @@ export const LAYER_TYPES = [
   "curve-text",
   "text-other",
   "static-photo",
+  "place-image",
   "cut-silhouette",
   "clipart-category",
   "photo-upload",
