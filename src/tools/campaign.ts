@@ -107,7 +107,7 @@ export function registerCampaignTools(server: McpServer, api: WebtoolsClient): v
   server.tool(
     "od_create_campaign",
     "CAMPAIGN: create. With artwork_id → adds that artwork on its Product Base (or product_slug), variants priced from base cost, " +
-      "listing seeded from artwork meta + base specs, flat mockups generated.",
+      "listing seeded from artwork meta + base specs. generate_mockups default true — for Trello→Garby set false and add ONE Trello cover via od_campaign_add_mockup (skill peral-trello-campaign / trello_garby_campaign.py).",
     {
       title: z.string().optional().describe("Default: artwork title"),
       artwork_id: z.string().optional(),
@@ -383,7 +383,7 @@ export function registerCampaignTools(server: McpServer, api: WebtoolsClient): v
 
   server.tool(
     "od_campaign_add_mockup",
-    "CAMPAIGN: attach a scene/AI mockup — local file_path (uploaded to Assets) or url.",
+    "CAMPAIGN: attach a scene/AI mockup — local file_path (uploaded to Assets) or url. Trello→Garby: only the card cover (is_primary true); do not attach Product Base gallery images.",
     {
       campaign_id: z.string(),
       file_path: z.string().optional(),

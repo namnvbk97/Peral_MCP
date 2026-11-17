@@ -52,6 +52,7 @@ Khi một artwork / campaign cần thứ editor không làm được (lót trắ
 
 ## 4. Mockup và listing
 
+- **Campaign từ card Trello (Garby):** skill `peral-trello-campaign` + tool `webtools/tools/trello_garby_campaign.py`. Mockup = **đúng 1 ảnh cover Trello** — không gallery Product Base, không `od_campaign_generate_mockups`.
 - **Artwork ≠ Mockup Editor.** Artwork chỉ là **file in**. Preview cho khách (ảnh chính, Main Image scene) dựng ở **Mockup Editor trong Edit Campaign**: ghép artwork lên ảnh chụp thật của phôi cho giống ảnh thật. Preview sai thì sửa ở Mockup Editor, không sửa artwork. Ảnh khách / chữ khách trong artwork phải là ô Customer Form đổ vào Place Image / Static Text (skill `peral-create-artwork` → "Luật tool").
 - Mockup là ảnh quảng cáo, **không phải file in**. `od_campaign_generate_mockups` / `od_render_mockups`, ảnh chính `od_campaign_set_primary_mockup`. Mockup theo kiểu (Heart, Star…) dùng `options` trên mockup template.
 - **Cốc / tumbler / mug**: mockup template warp phẳng ra tấm thẻ — không làm ảnh chính. Ghép lên **ảnh cốc thật** của xưởng bằng `webtools/tools/tumbler_scene_mockup.py` (file in từ `od_campaign_print_file`, 2–3 màu nền; ảnh + hình học ở `webtools/tools/mockup_scenes/<phôi>/`) → `od_campaign_add_mockup(file_path, is_primary: true)`. Không dùng cốc vẽ bằng code làm ảnh chính. Preview storefront: `od_campaign_update_product.preview` mode scene (ảnh cốc trơn + mask băng in + quad). Xoá mockup tấm phẳng nếu đã sinh. Mockup phải trông như ảnh đối thủ / ảnh user đưa; flat mockup chỉ là ảnh phụ.
