@@ -130,6 +130,10 @@ export function registerArtworkTools(server: McpServer, api: WebtoolsClient): vo
       product_slug: z.string().describe("od_list_product_bases → slug"),
       size: z.string().optional().describe("Product Base size, e.g. 30X40 (default: recommended). Sets phôi image + print spec"),
       store_id: z.string().optional(),
+      product_code: z
+        .string()
+        .optional()
+        .describe("Shop product id (ô productCode ở trang Artworks), e.g. CRDLG15082603 — letters/digits, uppercased; must be unique in the shop"),
       meta: z
         .object({
           psychology: z.string().optional(),
@@ -150,24 +154,29 @@ export function registerArtworkTools(server: McpServer, api: WebtoolsClient): vo
         .optional()
         .describe("Brief carried to Campaign listing"),
     },
-    async ({ title, product_slug, size, store_id, meta }) => {
+    async ({ title, product_slug, size, store_id, product_code, meta }) => {
       let art = await api.post<Artwork>("/studio/artworks", {
         title,
         productSlug: product_slug,
         size,
         storeId: store_id,
       });
-      if (meta) art = await api.patch<Artwork>(`/studio/artworks/${art.id}`, { meta });
+      const patch = stripUndefined({ meta, productCode: product_code });
+      if (Object.keys(patch).length) art = await api.patch<Artwork>(`/studio/artworks/${art.id}`, patch);
       return jsonText(compactArtwork(art));
     },
   );
 
   server.tool(
     "od_upsert_artwork",
-    "ARTWORK: create (no artwork_id; needs product_slug) or patch title/status/meta/templates/active_template_id/archived.",
+    "ARTWORK: create (no artwork_id; needs product_slug) or patch title/product_code/status/meta/templates/active_template_id/archived.",
     {
       artwork_id: z.string().optional(),
       title: z.string().optional(),
+      product_code: z
+        .string()
+        .optional()
+        .describe("Shop product id (ô productCode ở trang Artworks), e.g. CRDLG15082603 — letters/digits, uppercased; must be unique in the shop. Empty string clears it"),
       product_slug: z.string().optional(),
       store_id: z.string().optional(),
       templates: z.array(z.record(z.unknown())).optional(),
@@ -185,6 +194,7 @@ export function registerArtworkTools(server: McpServer, api: WebtoolsClient): vo
           storeId: args.store_id,
         });
         const patch = stripUndefined({
+          productCode: args.product_code,
           templates: args.templates,
           activeTemplateId: args.active_template_id,
           meta: args.meta,
@@ -201,6 +211,7 @@ export function registerArtworkTools(server: McpServer, api: WebtoolsClient): vo
             `/studio/artworks/${args.artwork_id}`,
             stripUndefined({
               title: args.title,
+              productCode: args.product_code,
               templates: args.templates,
               activeTemplateId: args.active_template_id,
               meta: args.meta,
