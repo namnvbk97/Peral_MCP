@@ -274,9 +274,13 @@ export function registerAdminTools(server: McpServer, api: WebtoolsClient): void
       store_id: z.string().optional().describe("Move order to this shop id"),
       tracking_number: z.string().optional(),
       tracking_company: z.string().optional(),
+      number: z.string().optional().describe("New order number — must be unused in the shop (409 otherwise)"),
+      reset_fulfillment: z.boolean().optional().describe(
+        "Undo 'sent to fulfiller': drop Merchize/Printway/Onospod link, supplier ref, sent/shipped ticks and tracking",
+      ),
     },
-    async ({ order_id, status, note, store_id, tracking_number, tracking_company }) => {
-      const body: Dict = stripUndefined({ status, note, storeId: store_id });
+    async ({ order_id, status, note, store_id, tracking_number, tracking_company, number, reset_fulfillment }) => {
+      const body: Dict = stripUndefined({ status, note, storeId: store_id, number, resetFulfillment: reset_fulfillment });
       if (tracking_number !== undefined || tracking_company !== undefined) {
         body.tracking = stripUndefined({
           number: tracking_number,

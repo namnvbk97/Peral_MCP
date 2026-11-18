@@ -150,8 +150,12 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
       shipping_address: z.record(z.string()).optional(),
       cod_enabled: z.boolean().optional().describe("Thu hộ tiền (COD) on / off; ignored for dropship orders"),
       cod: z.number().int().min(0).optional().describe("COD amount in VND"),
+      number: z.string().optional().describe("New order number — must be unused in the shop (409 otherwise)"),
+      reset_fulfillment: z.boolean().optional().describe(
+        "Undo 'sent to fulfiller' (wrong link): drop the supplier link, ref, sent/shipped ticks and tracking",
+      ),
     },
-    async ({ order_id, status, note, variant, shipping_address, cod_enabled, cod }) => {
+    async ({ order_id, status, note, variant, shipping_address, cod_enabled, cod, number, reset_fulfillment }) => {
       const ops: Record<string, unknown> = {};
       if (cod_enabled !== undefined) ops.codEnabled = cod_enabled;
       if (cod !== undefined) ops.cod = cod;
@@ -160,6 +164,8 @@ export function createMcpServer(api: WebtoolsClient): McpServer {
           status,
           note,
           variant,
+          ...(number ? { number } : {}),
+          ...(reset_fulfillment ? { resetFulfillment: true } : {}),
           ...(shipping_address ? { shippingAddress: shipping_address } : {}),
           ...(Object.keys(ops).length ? { ops } : {}),
         }),
